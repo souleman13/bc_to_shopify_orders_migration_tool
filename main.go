@@ -1,31 +1,65 @@
 package main
 
-import "strings"
+import (
+	"encoding/csv"
+	"strings"
+)
 
-type ProductLineItem struct {
-	Name string 
-	ProcessedAt string
+type BasicColumns struct {
+	FirstName string
+	LastName string 
+	Phone string
 	Email string
-	Item string
-	PaymentStatus string
-	PriceTotal float64
+	PriceTotalLine float64
 	PriceRefundTotal float64
 	PriceTotalOutstanding float64
-	TransactionType string
-	TransactionProccessedAt string
-	TransactionAmount float64
-	FullfillmentStatus string
-	FullfillmentProcessedAt string
-	FullfillmentShipmentStatus string
-	RefundAmount float64
+	PriceTotal float64
+	PaymentStatus string
+	OrderFulfillmentStatus string
+	LineType string
+}
+
+type Address struct {
+	FirstName string
+	LastName string
+	Company string
+	Phone string
+	Line1 string
+	Line2 string
+	City string
+	ProvinceCode string
+	Zip string
+	Country string
+}
+
+type ProductLineItem struct {
+	id string
+	Name string
+	Sku string
+	Quantity string
+	PricePer float64
+	PriceTotal float64
+	WeightGrams float64
+	LineFulfillmentStatus string
 }
 
 type TransactionLineItem struct {
 	id string
+	Kind string
+	ProccessedAt string
+	Amount float64
+	Status string
 }
 
 type FulfillmentLineItem struct {
 	id string
+	Status string
+	CreatedAt string
+	ShipmentStatus string
+}
+
+type RefundLineItem struct {
+	RefundAmount float64
 }
 
 func main() {
@@ -40,13 +74,13 @@ func main() {
         panic(err)
     }
 	
-	//remove header line
+	//remove header line by reading it
 	_, err = reader.Read()
 	if err != nil {
 		panic(err)
 	}
 
-	//read records into array
+	//read remaing record lines into array
 	records, err := reader.ReadAll()
 	if err != nil {
 		panic(err)
@@ -68,28 +102,26 @@ func main() {
 			for _, product := range products {
 				//seperate product values
 				newProductLineItem := ProductLineItem{
-					Email: record[0],
-					Item: product,
+					id: product,
 				}
-				writeCSVRecord(writer, []string{newProductLineItem.Email,newProductLineItem.Item})
+				writeCSVRecord(writer, []string{newProductLineItem.id})
 			}
 		} else {
 			newProductLineItem := ProductLineItem{
-				Email: record[0],
-				Item: record[1],
+				id: "",
 			}
-			writeCSVRecord(writer, []string{newProductLineItem.Email,newProductLineItem.Item})
+			writeCSVRecord(writer, []string{newProductLineItem.id})
 		}
 		//create transaction line
 		newTransactionLineItem := TransactionLineItem {
-			id: "",
+			Status: "",
 		}
-		writeCSVRecord(writer, []string{newTransactionLineItem.id})
+		writeCSVRecord(writer, []string{newTransactionLineItem.Status})
 		//create fulfillment line
 		newFulfillmentLineItem := FulfillmentLineItem {
-			id: "",
+			Status: "",
 		}
-		writeCSVRecord(writer, []string{newFulfillmentLineItem.id})
+		writeCSVRecord(writer, []string{newFulfillmentLineItem.Status})
 
 	}
 
@@ -98,4 +130,16 @@ func main() {
 	if err := writer.Error(); err != nil {
         panic(err)
     }
+}
+
+func writeProductRecord(writer *csv.Writer, basicCols BasicColumns, billingAddress Address, shippingAddress Address, product ProductLineItem){
+
+}
+
+func writeTransactionRecord(writer *csv.Writer, basicCols BasicColumns, billingAddress Address, shippingAddress Address, transaction TransactionLineItem){
+
+}
+
+func writeFulfillmentRecord(writer *csv.Writer, basicCols BasicColumns, billingAddress Address, shippingAddress Address, fulfillment FulfillmentLineItem){
+
 }
