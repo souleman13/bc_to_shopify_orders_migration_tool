@@ -33,7 +33,6 @@ type Address struct {
 }
 
 type ProductLineItem struct {
-	id string
 	Name string
 	Sku string
 	Quantity string
@@ -102,15 +101,15 @@ func main() {
 			for _, product := range products {
 				//seperate product values
 				newProductLineItem := ProductLineItem{
-					id: product,
+					Name: product,
 				}
-				writeCSVRecord(writer, []string{newProductLineItem.id})
+				writeCSVRecord(writer, []string{newProductLineItem.Name})
 			}
 		} else {
 			newProductLineItem := ProductLineItem{
-				id: "",
+				Name: "",
 			}
-			writeCSVRecord(writer, []string{newProductLineItem.id})
+			writeCSVRecord(writer, []string{newProductLineItem.Name})
 		}
 		//create transaction line
 		newTransactionLineItem := TransactionLineItem {
@@ -132,7 +131,7 @@ func main() {
     }
 }
 
-func writeProductRecord(writer *csv.Writer, basicCols BasicColumns, billingAddress Address, shippingAddress Address, product ProductLineItem){
+func writeProductRecord(writer *csv.Writer, basicCols BasicColumns, product ProductLineItem){
 
 }
 
