@@ -93,37 +93,49 @@ func main() {
 	//defer file close to end of execution
 	defer file.Close()
 
+	//create file headers
+	writeCSVRecord(writer, []string{})
+
 	//for order products
 	for _, record := range records {
+		//record basic info used for all records
+		basicInfo := BasicColumns {
+
+		}
+		billingAddress := Address {
+
+		}
+		shippingAddress := Address {
+
+		}
 		//split products into unique line items
 		products := strings.Split(record[36], "|")
 		if len(products) > 1 {
 			for _, product := range products {
 				//seperate product values
-				newProductLineItem := ProductLineItem{
+				productLineItem := ProductLineItem{
 					Name: product,
 				}
-				writeCSVRecord(writer, []string{newProductLineItem.Name})
+				writeProductRecord(writer, basicInfo, productLineItem)
 			}
 		} else {
-			newProductLineItem := ProductLineItem{
+			productLineItem := ProductLineItem{
 				Name: "",
 			}
-			writeCSVRecord(writer, []string{newProductLineItem.Name})
+			writeProductRecord(writer, basicInfo, productLineItem)
 		}
 		//create transaction line
-		newTransactionLineItem := TransactionLineItem {
+		transaction := TransactionLineItem {
 			Status: "",
 		}
-		writeCSVRecord(writer, []string{newTransactionLineItem.Status})
+		writeTransactionRecord(writer, basicInfo, billingAddress, transaction)
 		//create fulfillment line
-		newFulfillmentLineItem := FulfillmentLineItem {
+		fulfillment := FulfillmentLineItem {
 			Status: "",
 		}
-		writeCSVRecord(writer, []string{newFulfillmentLineItem.Status})
+		writeFulfillmentRecord(writer, basicInfo, shippingAddress, fulfillment)
 
 	}
-
 
 	writer.Flush()
 	if err := writer.Error(); err != nil {
@@ -132,13 +144,13 @@ func main() {
 }
 
 func writeProductRecord(writer *csv.Writer, basicCols BasicColumns, product ProductLineItem){
-
+	writeCSVRecord(writer, []string{})
 }
 
-func writeTransactionRecord(writer *csv.Writer, basicCols BasicColumns, billingAddress Address, shippingAddress Address, transaction TransactionLineItem){
-
+func writeTransactionRecord(writer *csv.Writer, basicCols BasicColumns, billingAddress Address, transaction TransactionLineItem){
+	writeCSVRecord(writer, []string{})
 }
 
-func writeFulfillmentRecord(writer *csv.Writer, basicCols BasicColumns, billingAddress Address, shippingAddress Address, fulfillment FulfillmentLineItem){
-
+func writeFulfillmentRecord(writer *csv.Writer, basicCols BasicColumns, shippingAddress Address, fulfillment FulfillmentLineItem){
+	writeCSVRecord(writer, []string{})
 }
