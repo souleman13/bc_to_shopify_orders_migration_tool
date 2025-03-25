@@ -112,9 +112,14 @@ func main() {
 		products := strings.Split(record[36], "|")
 		if len(products) > 1 {
 			for _, product := range products {
-				//seperate product values
+				productParts := strings.Split(product, ",")
+				productValues := []string{}
+				for _, parts := range productParts {
+					value := strings.Split(parts, ": ")[1]
+					productValues = append(productValues, value)
+				}
 				productLineItem := ProductLineItem{
-					Name: product,
+					Name: productValues[0],
 				}
 				writeProductRecord(writer, basicInfo, productLineItem)
 			}
@@ -153,4 +158,16 @@ func writeTransactionRecord(writer *csv.Writer, basicCols BasicColumns, billingA
 
 func writeFulfillmentRecord(writer *csv.Writer, basicCols BasicColumns, shippingAddress Address, fulfillment FulfillmentLineItem){
 	writeCSVRecord(writer, []string{})
+}
+
+func breakdownProducts(){
+
+}
+
+func adjustDateFormat(date string) string {
+	// swap date format
+	// mm/dd/yyyy -> yyyy-mm-dd
+	dateParts := strings.Split(date, "/")
+	newDate := dateParts[2] + "-" + dateParts[0] + "-" + dateParts[1]
+	return newDate
 }
